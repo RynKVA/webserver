@@ -12,7 +12,7 @@ import java.util.List;
 import static com.rynkovoy.webserver.request_handler.request_parser.HttpMethod.GET;
 import static org.junit.jupiter.api.Assertions.*;
 
-class RequestParserTest {
+class ServerTest {
     Request request;
 
     @BeforeEach
@@ -59,6 +59,18 @@ class RequestParserTest {
         assertEquals("ru.wikipedia.org", request.getHeaders().get("Host"));
         assertEquals("Mozilla/5.0 (X11; U; Linux i686; ru; rv:1.9b5) Gecko/2008050509 Firefox/3.0b5", request.getHeaders().get("User-Agent"));
         assertEquals("text/html", request.getHeaders().get("Accept"));
+    }
+
+    @Test
+    @DisplayName("When use injectHeaders on divider headers lines which has wrong request protocol then expect ServerException with statusCode 400 Bad Request")
+    void wrongFillingRequestHeaders() {
+        List<String> headers = new ArrayList<>(3);
+        headers.add("Host ru.wikipedia.org");
+
+        ServerException serverException = assertThrows(ServerException.class,
+                () -> RequestParser.injectHeaders(headers, request));
+        assertEquals(400, serverException.getStatusCode().getCode());
+        assertEquals("Bad Request", serverException.getStatusCode().getStatusText());
     }
 
     @Test
