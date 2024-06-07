@@ -29,6 +29,15 @@ class ServerTest {
     }
 
     @Test
+    @DisplayName("When use injectUriAndMethod on wrong formalized first line client request then expect ServerException with statusCode 400 Bad Request")
+    void whenUseInjectUriAndMethod_ThenExemplarRequestFillingUriAndMethod1() {
+        ServerException exception = assertThrows(ServerException.class,
+                () -> RequestParser.injectUriAndMethod("GETindex.html HTTP/1.1", request));
+        assertEquals(400, exception.getStatusCode().getCode());
+        assertEquals("Bad Request", exception.getStatusCode().getStatusText());
+    }
+
+    @Test
     @DisplayName("When use injectUriAndMethod with not allowed method then expect ServerException with statusCode 405 Method Not Allowed")
     void whenUseInjectUriAndMethodWithNotAllowedMethod_ThenExpectServerExceptionWithStatusCode405() {
         ServerException serverException = assertThrows(ServerException.class,
